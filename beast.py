@@ -64,7 +64,7 @@ class AlignmetIO ():
 			
 		return loci_storage
 
-	def guess_code (sequence):
+	def guess_code (self,sequence):
 		""" Function that guesses the code of the molecular sequences (i.e., DNA or Protein) based on the first sequence of a reference file """
 		sequence = sequence.upper().replace("-","") # Removes gaps from the sequence so that the frequences are not biased
 		DNA_count = sequence.count("A") + sequence.count("T") + sequence.count("G") + sequence.count("C") + sequence.count("N")
@@ -78,22 +78,33 @@ class AlignmetIO ():
 	def writeAlignment (self, alignment_dictionary, output_file, output_format="fasta"):
 		""" Write an alignment to a file in a specified format. The alignment dictionary must contain the taxon id as keys and their sequences as values """
 		
-		ouput_handle = open(output_file, "w")
+		output_handle = open(output_file, "w")
 		
 		if "fasta" in output_format:
-			for taxon, sequence in alignment_dictionary.items()
+			for taxon, sequence in alignment_dictionary.items():
 				output_handle.write(">%s\n%s\n" % (taxon, sequence))
 
 		elif "nexus" in output_format:
 			
-			sequence_length = len(next(iter(alignment_dictionary)))
-			coding = guess_code(next(iter(alignment_dictionary)))
+			sequence_length = len(next(iter(alignment_dictionary.values())))
+			coding = self.guess_code(next(iter(alignment_dictionary.values())))
 			
 			output_handle.write("#NEXUS\n\nBegin data;\n\tdimensions ntax=%s nchar=%s ;\n\tformat datatype=%s interleave=no gap=- missing=%s ;\n\tmatrix\n" % (len(alignment_dictionary), sequence_length, coding[0], coding[1]))
 			
+			for taxon, sequence in alignment_dictionary.items():
+				output_handle.write("%s %s\n" % (taxon[0:24].ljust(25),sequence))
+			else:
+				output_handle.write(";\n\tend;")
 			
 		elif "phylip" in output_format:
-		
+			sequence_length = len(next(iter(alignment_dictionary.values())))
+			sequence_number = len(alignment_dictionary)
+			
+			output_handle.write("%s %s\n" % (sequence_number, sequence_length))
+			
+			for taxon, sequence in alignment_dictionary.items():
+				output_handle.write("%s %s\n" % (taxon[:24].ljust(25), sequence))
+			
 		output_handle.close()
 		
 		return 0
