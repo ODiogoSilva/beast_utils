@@ -22,10 +22,22 @@
 #  
 #  
 
-class SequenceIO ():
+class AlignmetIO ():
 	def __init__ (self, xml_file):
 		""" The sequence class is initialized by providing the XML input file that will be parser/manipulated """
 		self.xml_file = xml_file
+		
+	def getIDSeq (self, dom_alignment_obj):
+		""" Retrieves a dictionary with the taxon id as key and its sequence as value from a single DOM element. The DOM element must contain a set of sequence tags, which will be parsed for the taxon id and sequence """
+		alignment_storage = {}
+		
+		for sequence_element in dom_alignment_obj.getElementsByTagName("sequence"):
+			taxon_id = sequence_element.childNodes.item(1).getAttribute("idref")
+			sequence = sequence_element.childNodes.item(2).toxml().strip()
+			alignment_storage[taxon_id] = sequence
+			
+		return alignment_storage
+		
 	def parser (self):
 		""" This will parse the XML input file and return a dictionary with the taxa names as keys and sequences as values """
 		#import easy to use xml parser called minidom:
@@ -33,13 +45,18 @@ class SequenceIO ():
 		
 		file_handle = open(self.xml_file)
 		
-		xml = parseString(file_handle.read())
+		xml_beast = parseString(file_handle.read())
 		file_handle.close()
 		
-		xmlTag = xml.getElementsByTagName('alignment')[0].toxml()
+		alignmentTag = xml_beast.getElementsByTagName("alignment")
 		
-		print (xmlTag)
+		for alignment_obj in alignmentTag:
+			if alignment_obj.childNodes != []:
+				current_alignment = self.getIDSeq (alignment_obj)
+				
+
 		
+						
 		
 
 
