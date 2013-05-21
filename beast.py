@@ -63,21 +63,40 @@ class AlignmetIO ():
 				loci_storage.append(current_alignment)
 			
 		return loci_storage
-		
-		
-	#~ def writeAlignment (self, alignment_dictionary, output_file, output_format="fasta"):
-		#~ """ Write an alignment to a file in a specified format. The alignment dictionary must contain the taxon id as keys and their sequences as values """
-		#~ 
-		#~ ouput_handle = open(output_file, "w")
-		#~ 
-		#~ if "fasta" in output_format:
-			#~ s = ""
-		#~ elif "nexus" in output_format:
-			#~ s = ""
-		#~ elif "phylip" in output_format:
-			#~ s= ""
 
+	def guess_code (sequence):
+		""" Function that guesses the code of the molecular sequences (i.e., DNA or Protein) based on the first sequence of a reference file """
+		sequence = sequence.upper().replace("-","") # Removes gaps from the sequence so that the frequences are not biased
+		DNA_count = sequence.count("A") + sequence.count("T") + sequence.count("G") + sequence.count("C") + sequence.count("N")
+		DNA_proportion = float(DNA_count)/float(len(sequence))
+		if DNA_proportion > 0.9: # The 0.9 cut-off has been effective so far
+			code = ("DNA","N")
+		else:
+			code = ("Protein","X")
+		return code
+	
+	def writeAlignment (self, alignment_dictionary, output_file, output_format="fasta"):
+		""" Write an alignment to a file in a specified format. The alignment dictionary must contain the taxon id as keys and their sequences as values """
 		
+		ouput_handle = open(output_file, "w")
+		
+		if "fasta" in output_format:
+			for taxon, sequence in alignment_dictionary.items()
+				output_handle.write(">%s\n%s\n" % (taxon, sequence))
+
+		elif "nexus" in output_format:
+			
+			sequence_length = len(next(iter(alignment_dictionary)))
+			coding = guess_code(next(iter(alignment_dictionary)))
+			
+			output_handle.write("#NEXUS\n\nBegin data;\n\tdimensions ntax=%s nchar=%s ;\n\tformat datatype=%s interleave=no gap=- missing=%s ;\n\tmatrix\n" % (len(alignment_dictionary), sequence_length, coding[0], coding[1]))
+			
+			
+		elif "phylip" in output_format:
+		
+		output_handle.close()
+		
+		return 0
 						
 		
 
