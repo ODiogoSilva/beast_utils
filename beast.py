@@ -39,22 +39,29 @@ class AlignmetIO ():
 		return alignment_storage
 		
 	def parser (self):
-		""" This will parse the XML input file and return a dictionary with the taxa names as keys and sequences as values """
+		""" This will parse the XML input file and return a list of dictionaries with the taxa names as keys and sequences as values. The size of the list will correspond to the number of loci in the xml file """
 		#import easy to use xml parser called minidom:
 		from xml.dom.minidom import parseString
 		
+		loci_storage = []
+		
 		file_handle = open(self.xml_file)
 		
+		# Read and make inital parsing of the xml file using the xml module
 		xml_beast = parseString(file_handle.read())
 		file_handle.close()
 		
+		# Get only the XML part that contains the sequence alignment
 		alignmentTag = xml_beast.getElementsByTagName("alignment")
 		
+		# Iterate over the alignment field(s) and retrieve a dictionary from each one
 		for alignment_obj in alignmentTag:
 			if alignment_obj.childNodes != []:
 				current_alignment = self.getIDSeq (alignment_obj)
+				loci_storage.append(current_alignment)
 				
-
+		return loci_storage
+		
 		
 						
 		
