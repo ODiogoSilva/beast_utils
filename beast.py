@@ -29,7 +29,9 @@ class AlignmetIO ():
 		
 	def getIDSeq (self, dom_alignment_obj):
 		""" Retrieves a dictionary with the taxon id as key and its sequence as value from a single DOM element. The DOM element must contain a set of sequence tags, which will be parsed for the taxon id and sequence """
-		alignment_storage = {}
+		import collections
+		
+		alignment_storage = collections.OrderedDict()
 		
 		for sequence_element in dom_alignment_obj.getElementsByTagName("sequence"):
 			taxon_id = sequence_element.childNodes.item(1).getAttribute("idref")
@@ -59,9 +61,22 @@ class AlignmetIO ():
 			if alignment_obj.childNodes != []:
 				current_alignment = self.getIDSeq (alignment_obj)
 				loci_storage.append(current_alignment)
-				
+			
 		return loci_storage
 		
+		
+	#~ def writeAlignment (self, alignment_dictionary, output_file, output_format="fasta"):
+		#~ """ Write an alignment to a file in a specified format. The alignment dictionary must contain the taxon id as keys and their sequences as values """
+		#~ 
+		#~ ouput_handle = open(output_file, "w")
+		#~ 
+		#~ if "fasta" in output_format:
+			#~ s = ""
+		#~ elif "nexus" in output_format:
+			#~ s = ""
+		#~ elif "phylip" in output_format:
+			#~ s= ""
+
 		
 						
 		
