@@ -22,8 +22,24 @@
 #  
 #  
 
-class Sequence ():
+class SequenceIO ():
 	def __init__ (self, xml_file):
+		""" The sequence class is initialized by providing the XML input file that will be parser/manipulated """
 		self.xml_file = xml_file
+	def parser (self):
+		""" This will parse the XML input file and return a dictionary with the taxa names as keys and sequences as values """
+		#import easy to use xml parser called minidom:
+		from xml.dom.minidom import parseString
+		
+		file_handle = open(self.xml_file)
+		
+		xml = parseString(file_handle.read())
+		file_handle.close()
+		
+		xmlTag = xml.getElementsByTagName('alignment')[0].toxml()
+		
+		print (xmlTag)
+		
+		
 
 
