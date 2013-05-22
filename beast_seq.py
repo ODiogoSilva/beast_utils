@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-#  beast_seq.py
-#  
+#  beast_seq.py v0.1
+#  author: Diogo N Silva
+#  last updated: 22/05/2013
+#
 #  Copyright 2013 Unknown <diogo@UltraArch>
 #  
 #  This program is free software; you can redistribute it and/or modify
@@ -27,11 +29,29 @@ import argparse
 
 parser = argparse.ArgumentParser(description="Toolbox for processing outlier loci from Phylo-MCOA")
 
-parser.add_argument("-in",dest="infile",help="The alignment files")
+parser.add_argument("-in",dest="infile",help="The BEAST XML file")
+parser.add_argument("-of",dest="output_format",nargs="+",default="nexus",choices=["fasta","phylip","nexus"],help="The format of the output file")
+parser.add_argument("-o",dest="output_file",help="The nameof the output file")
 
 args = parser.parse_args()
 
 def main():
+	# Arguments
+	xml_file = "".join(args.infile)
+	output_format = args.output_format
+	output_file = "".join(args.output_file)
+	
+	print (output_format)
+	
+	# Initializing main class
+	xml_handle = beast.AlignmetIO(xml_file)
+	
+	alignment_list = xml_handle.parser()
+	
+	# Write to file
+	for alignment in alignment_list:
+		for file_format in output_format:
+			xml_handle.writeAlignment(alignment,output_file,output_format=file_format)
 
 	return 0
 
