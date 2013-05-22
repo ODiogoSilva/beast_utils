@@ -30,7 +30,7 @@ import argparse
 parser = argparse.ArgumentParser(description="Toolbox for processing outlier loci from Phylo-MCOA")
 
 parser.add_argument("-in",dest="infile",help="The BEAST XML file")
-parser.add_argument("-of",dest="output_format",nargs="+",default="nexus",choices=["fasta","phylip","nexus"],help="The format of the output file")
+parser.add_argument("-of",dest="output_format",nargs="+",required=True,choices=["fasta","phylip","nexus"],help="The format of the output file")
 parser.add_argument("-o",dest="output_file",help="The nameof the output file")
 
 args = parser.parse_args()
