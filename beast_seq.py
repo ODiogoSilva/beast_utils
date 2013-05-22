@@ -40,9 +40,7 @@ def main():
 	xml_file = "".join(args.infile)
 	output_format = args.output_format
 	output_file = "".join(args.output_file)
-	
-	print (output_format)
-	
+		
 	# Initializing main class
 	xml_handle = beast.AlignmetIO(xml_file)
 	
